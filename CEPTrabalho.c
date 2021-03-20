@@ -14,32 +14,28 @@ struct _Endereco
 	char lixo[2];
 };
 
-/*
-	SEEK_SET = Posição inicial	
-	SEEK_CUR = Posição atual
-	SEEK_END = Posição final
-*/
+
 
 
 int buscaBinaria(FILE *f, char *bCep,long ini,long fim,int cont){  
 
 	Endereco e;
 	long meio;
-	rewind(f);												// Volta ao começo do arquivo
+	rewind(f);												
 	if(ini <= fim){
 
-		int qt;	// Testa se foi possivel ler
+		int qt;	
 
 		cont++;
 
 		meio = (ini+fim)/2;
 
-		//printf("\nINICIO: %ld\tMEIO: %ld\tFINAL: %ld\n",ini,meio,fim);
+		
 
 		fseek(f,(meio*sizeof(Endereco)),SEEK_SET);
 
 		qt = fread(&e, sizeof(Endereco), 1, f);
-		//printf("\n\nLogradouro: %.72s\nBairro: %.72s\nCidade: %.72s\nUF: %.72s\nSigla: %.2s\nCEP: %.8s\n",e.logradouro,e.bairro,e.cidade,e.uf,e.sigla,e.cep);
+		
 
 		if(strncmp(bCep,e.cep,8) == 0){
 			printf("\nLogradouro: %.72s\nBairro: %.72s\nCidade: %.72s\nUF: %.72s\nSigla: %.2s\nCEP: %.8s\n\n",e.logradouro,e.bairro,e.cidade,e.uf,e.sigla,e.cep);
@@ -58,7 +54,7 @@ int buscaBinaria(FILE *f, char *bCep,long ini,long fim,int cont){
 	}
 	else{
 		
-		printf("Não foi possivel encontrar o CEP\n");
+		printf("Cep não achado");
 		return cont;
 
 	}
@@ -69,7 +65,7 @@ int buscaNaoBinaria(FILE *f, char *bCep,int cont){
 
 	rewind(f);												
 	Endereco e;
-	int qt;		// (qt) Armazena quantos foram lidos
+	int qt;		
 	qt = fread(&e,sizeof(Endereco),1,f);
 
 	while(qt > 0){
@@ -96,7 +92,7 @@ int main(int argc, char**argv){
 	char bCep[8];
 
 	if(argc != 2){											
-		printf("Entre com o CEP que deseja pesquisar:\n");
+		printf("Qual Cep?:\n");
 		int i = 0;
 		while(i < 8){
 			bCep[i++] = getchar();
@@ -110,13 +106,8 @@ int main(int argc, char**argv){
 
 	f = fopen("cep_ordenado.dat","r");						
 
-
 	fseek(f,0,SEEK_END);									
 	posicao = ftell(f);										
-	
-
-
-	printf("________________________[INFO]________________________\n\n");
 	printf("Tamanho do Arquivo: %ldBytes\n", posicao);
 	printf("Tamanho do Registro: %ld\n", sizeof(Endereco));
 	printf("Tamanho do Arquivo em Registros: %ld\n", posicao/sizeof(Endereco));
@@ -125,13 +116,13 @@ int main(int argc, char**argv){
 	ultimo = (posicao/sizeof(Endereco))-1;
 
 	
-	printf("\n___________________[BUSCA BINÁRIA]____________________\n\n");
+	printf("BUSCA BINÁRIA");
 	printf("Numero de iterações: %d\n",buscaBinaria(f, bCep,primeiro, ultimo,0));
 	
 
-	printf("\n_________________[BUSCA NÃO BINÁRIA]__________________\n\n");
+	printf("BUSCA NÃO BINÁRIA\n\n");
 	printf("Numero de iterações: %d\n",buscaNaoBinaria(f, bCep,0));
-	printf("______________________________________________________\n\n");
+	
 
 	return 0;
 }
